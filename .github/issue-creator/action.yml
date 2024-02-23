@@ -1,0 +1,15 @@
+name: Issue creator
+description: Action to create Github issues in a repo
+inputs:
+    title:
+        description: Title of the issue to create
+        required: true
+    body:
+        description: Body of the issue to create
+        required: true
+    repo-token:
+        description: Token with permission to perform action on a repo
+        required: true
+runs:
+    using: node20
+    main: index.js

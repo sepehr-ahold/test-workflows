@@ -1,0 +1,28 @@
+name: Git action
+description: Get basic details about the last commit
+
+outputs:
+  short-sha:
+    description: Short SHA of the latest commit
+    value: ${{steps.commit-sha.outputs.sha}}
+  commit-message:
+    description: Full body of the latest commit
+    value: ${{steps.commit-message.outputs.message}}
+
+runs:
+  using: composite
+  steps:
+    - name: Get commit SHA
+      id: commit-sha
+      shell: bash
+      run: |
+        sha=$(git log -1 --pretty=format:"%h")
+        echo "Commit SHA: $sha"
+        echo "sha=$sha" >> $GITHUB_OUTPUT
+    - name: Get commit message
+      id: commit-message
+      shell: bash
+      run: |
+        message=$(git log -1 --pretty=format:"%s")
+        echo "Commit message: $message"
+        echo "message=$message" >> $GITHUB_OUTPUT

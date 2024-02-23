@@ -1,22 +1,33 @@
 name: Second workflow
 
 on:
-    push:
-    workflow_dispatch:
+  push:
+  workflow_dispatch:
 
 jobs:
-    simple-job:
-        name: Print details
-        runs-on: ubuntu-latest
-        steps:
-            - name: Checkout repo
-              uses: actions/checkout@v4
-            - name: Call reusable action
-              id: git
-              uses: ./.github/git  
-            - name: Print result
-              env:
-                SHA: ${{steps.git.outputs.short-sha}}
-                run: |
-                    echo $SHA
-                    echo ${{steps.git.outputs.commit-message}}  
+  simple-job:
+    name: Print details
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Call reusable action
+        id: git
+        uses: ./.github/git
+
+      - name: Print result
+        env:
+          SHA: ${{steps.git.outputs.short-sha}}
+        run: |
+            echo $SHA
+            echo ${{steps.git.outputs.commit-message}}
+
+      - name: Create a Github issue
+        uses: ./.github/issue-creator
+        with:
+          title: Commit ${{steps.action.outputs.short-sha}}
+          body: |
+            Commit with the message
+            > ${{steps.action.outputs.commit-message}}
+          repo-token: ${{secrets.GITHUB_TOKEN}}
